@@ -1,0 +1,27 @@
+{
+  "_preset": "balanced",
+  "_description": "Default risk profile. Matches the default agent.json values.",
+  "_apply": "Copy these values into config/agent.json strategy and risk sections.",
+
+  "strategy": {
+    "entryBudgetSol":          0.01,
+    "minScanScore":            45,
+    "minLiquidity":            500000,
+    "stopLossPct":             -6,
+    "takeProfitPct":           25,
+    "maxHoldMinutes":          45,
+    "maxOpenPositions":        3,
+    "trailingStopActivatePct": 4,
+    "trailingStopDistancePct": 3
+  },
+
+  "risk": {
+    "maxEntry1hDropPct": -15,
+    "safeOnly":          false
+  },
+
+  "swarm": {
+    "minReputationToFollow": 40,
+    "consensusBoostFactor":  1.2
+  }
+}
