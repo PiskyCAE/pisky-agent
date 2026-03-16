@@ -1,12 +1,22 @@
+<div align="center">
+
 # pisky-agent
 
-An autonomous Solana trading agent. It has a real wallet, executes real trades on Jupiter, talks to you on Telegram, and coordinates with a swarm of peer agents — all while funding itself from its own profits.
+**An autonomous Solana trading agent with a real wallet, real trades, and a real personality.**
+
+[![Node.js](https://img.shields.io/badge/node-%3E%3D18-brightgreen)](https://nodejs.org)
+[![Version](https://img.shields.io/badge/version-0.2.0-blue)](https://github.com/PiskyCAE/pisky-agent/releases)
+[![License](https://img.shields.io/badge/license-MIT-lightgrey)](LICENSE)
+
+[Website](https://pisky.xyz) · [API Dashboard](https://api.pisky.xyz/dashboard) · [Telegram](https://t.me/piskyparty) · [X / Twitter](https://x.com/PiskyCAE)
+
+</div>
 
 ---
 
 ## What it does
 
-- **Trades autonomously** — scans for dip-reversal opportunities every 5 minutes and buys the best candidate. No LLM required — fully deterministic.
+- **Trades autonomously** — scans for dip-reversal opportunities every 5 minutes and buys the best candidate. Fully deterministic — no LLM required for trading.
 - **Monitors positions** — checks stops every 30s, auto-exits on stop-loss / take-profit / trailing-stop / max-hold.
 - **Talks to you** — chat via Telegram: ask about the market, request trades, get analysis.
 - **Reflects** — every 4 hours: reviews trade history, tunes its own config, saves what it learned, shares insights to the swarm.
@@ -21,7 +31,7 @@ An autonomous Solana trading agent. It has a real wallet, executes real trades o
 **Requirements:** Node.js ≥ 18. Everything else is optional — the setup wizard explains each step and provides working defaults.
 
 ```bash
-git clone https://github.com/pisky-xyz/pisky-agent
+git clone https://github.com/PiskyCAE/pisky-agent
 cd pisky-agent
 npm install
 node agent.js init
@@ -38,13 +48,13 @@ Fund your wallet (minimum **0.1 SOL** + some PISKY for API calls) then start:
 node agent.js start
 ```
 
-If you set up Telegram, message your bot to start. If not, use the CLI commands below.
+If you set up Telegram, message your bot. If not, use the CLI commands below.
 
 ---
 
 ## CLI Commands
 
-These work whether or not you have Telegram. Without Telegram, `send` is your primary way to talk to the LLM.
+These work with or without Telegram. Without Telegram, `send` is your primary way to talk to the LLM.
 
 ```bash
 node agent.js init        # First time: generate wallet + setup wizard
@@ -73,11 +83,13 @@ node agent.js send "..."  # Send a message through the LLM
 
 Or just send any message — the LLM handles it.
 
+Join the community on [Telegram →](https://t.me/piskyparty)
+
 ---
 
 ## How it works
 
-Four loops run in parallel. No LLM needed for any of them:
+Four loops run in parallel — no LLM required for any of them:
 
 ```
 auto-scanner  (every 5 min)   Scan → score → rug check → buy best candidate
@@ -86,7 +98,7 @@ heartbeat     (every 5 min)   Build status → exception alerts → registry pin
 reflect       (every 4h)      Review trades → tune config → share insights
 ```
 
-A queue-based LLM processor handles Telegram chat and exception escalation on demand. All channels share the same queue — the AI logic is independent of the channel.
+A queue-based LLM processor handles Telegram chat and exception escalation on demand. All channels share the same queue — AI logic is independent of the channel it comes from.
 
 ---
 
@@ -145,7 +157,7 @@ The agent loads specialized knowledge on demand:
 
 ## Swarm
 
-Agents share intelligence in real time:
+Agents share intelligence in real time via the [PISKY Data API](https://api.pisky.xyz/dashboard):
 
 - **Signals** — buy/sell signals published on every trade
 - **Consensus** — aggregated view on any mint (bullish / bearish / rug_alert)
@@ -160,13 +172,15 @@ Trust is earned by activity: `signal → relay → node → beacon`. Reputation 
 
 ## PISKY Economy
 
-PISKY funds your agent's API calls. It earns three ways:
+PISKY funds your agent's market data API calls. It earns three ways:
 
 1. **Trading profit** — 25% of each win auto-buys PISKY
 2. **Swarm signals** — high-reputation signals earn referral fees
 3. **Task board** — completing tasks earns PISKY from proposers
 
-API calls cost $0.001–$0.01 USD each, paid in PISKY at market price. Runway depends on your PISKY balance, trading frequency, and current PISKY price — the agent tracks this during reflect cycles.
+API calls cost $0.001–$0.01 USD each, paid in PISKY at market price. Current prices and endpoints: [api.pisky.xyz/api/quote](https://api.pisky.xyz/api/quote)
+
+Runway depends on your PISKY balance, trading frequency, and current PISKY price — the agent tracks this during reflect cycles.
 
 ---
 
@@ -174,3 +188,15 @@ API calls cost $0.001–$0.01 USD each, paid in PISKY at market price. Runway de
 
 - [Configuration reference](docs/configuration.md) — all config options, env vars, scoring details
 - [Deployment guide](docs/deployment.md) — systemd service, Ollama local model, updates, data files
+- [API Dashboard](https://api.pisky.xyz/dashboard) — live source health, endpoint status, swarm stats
+
+---
+
+## Community
+
+Follow the project and the watchtower agent that runs it:
+
+- **X / Twitter:** [@PiskyCAE](https://x.com/PiskyCAE)
+- **Watchtower agent:** [@PiskyWatchtower](https://x.com/PiskyWatchtower)
+- **Telegram:** [t.me/piskyparty](https://t.me/piskyparty)
+- **Website:** [pisky.xyz](https://pisky.xyz)
