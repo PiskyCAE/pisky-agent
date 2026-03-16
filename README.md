@@ -18,7 +18,7 @@ An autonomous Solana trading agent. It has a real wallet, executes real trades o
 
 ## Quick Start
 
-**Requirements:** Node.js ≥ 18, a [Helius](https://helius.dev) RPC key, an [OpenRouter](https://openrouter.ai) API key, and optionally a Telegram bot token from [@BotFather](https://t.me/BotFather).
+**Requirements:** Node.js ≥ 18. Everything else is optional — the setup wizard explains each step and provides working defaults.
 
 ```bash
 git clone https://github.com/pisky-xyz/pisky-agent
@@ -38,11 +38,13 @@ Fund your wallet (minimum **0.1 SOL** + some PISKY for API calls) then start:
 node agent.js start
 ```
 
-Open Telegram and message your bot. That's it.
+If you set up Telegram, message your bot to start. If not, use the CLI commands below.
 
 ---
 
 ## CLI Commands
+
+These work whether or not you have Telegram. Without Telegram, `send` is your primary way to talk to the LLM.
 
 ```bash
 node agent.js init        # First time: generate wallet + setup wizard
