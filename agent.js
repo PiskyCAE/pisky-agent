@@ -258,7 +258,7 @@ async function cmdInit() {
 
 // ── CLI: setup — re-run wizard ────────────────────────────────────────────────
 
-function cmdSetup() {
+async function cmdSetup() {
   const wizardPath = path.join(__dirname, 'setup-wizard.sh');
   if (!fs.existsSync(wizardPath)) { console.error('setup-wizard.sh not found'); process.exit(1); }
   const { spawnSync } = require('child_process');
