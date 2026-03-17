@@ -80,8 +80,8 @@ Add to `config/agent.local.json`:
 Pull upstream improvements without losing your customizations:
 
 ```bash
-node update.js          # Show what would change (dry run)
-node update.js --apply  # Apply safe updates, skip your files
+node scripts/update.js          # Show what would change (dry run)
+node scripts/update.js --apply  # Apply safe updates, skip your files
 ```
 
 The update script applies changes to `lib/`, `skills/`, `agent.js`, and `package.json` — and skips `data/`, `.env`, `soul.local.md`, and `config/agent.local.json`.
