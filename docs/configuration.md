@@ -87,8 +87,8 @@ You only need to include the keys you want to change:
 ```json
 {
   "survival": {
-    "minSolWarning": 0.05,   // Warn when SOL drops below this
-    "minSolPause": 0.02,     // Pause new buys below this
+    "minSolWarning": 0.03,   // Warn when SOL drops below this
+    "minSolPause": 0.01,     // Pause new buys below this
     "piskyReinvestPct": 0.25 // % of profit auto-converted to PISKY (default 25%)
   }
 }

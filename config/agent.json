@@ -36,8 +36,8 @@
     "_note": "provider: 'openrouter' (cloud) or 'ollama' (local). baseUrl overrides provider default. openrouterKey or OPENROUTER_API_KEY env var."
   },
   "survival": {
-    "minSolWarning": 0.05,
-    "minSolPause": 0.02,
+    "minSolWarning": 0.03,
+    "minSolPause": 0.01,
     "piskyReinvestPct": 0.25,
     "_note": "Warn when SOL < minSolWarning. Pause new buys when SOL < minSolPause. piskyReinvestPct: fraction of each profit used to buy PISKY (0.25 = 25%)."
   },
