@@ -205,14 +205,10 @@ async function main() {
       continue;
     }
     if (isSafeFile(f)) {
-      const locallyTouched = hasLocalChanges(f);
-      if (locallyTouched) {
-        needsReview.push(f);
-      } else {
-        safeUpdates.push(f);
-      }
+      // Repo-owned files always apply — PROTECTED covers user-owned files
+      safeUpdates.push(f);
     } else {
-      // Unknown file — treat as needing review
+      // Unknown file — skip unless user explicitly checks it out
       needsReview.push(f);
     }
   }
@@ -226,8 +222,8 @@ async function main() {
   }
 
   if (needsReview.length) {
-    header('Needs review (you have local changes — skipped)');
-    needsReview.forEach(f => warn(`${f}  ← you modified this locally`));
+    header('Needs review (unknown files — skipped)');
+    needsReview.forEach(f => warn(f));
     print('');
     print('  To see what changed upstream:');
     needsReview.forEach(f => print(`    git diff HEAD origin/${branch} -- ${f}`));
