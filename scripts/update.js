@@ -42,11 +42,14 @@ const HELP  = process.argv.includes('--help') || process.argv.includes('-h');
 const SAFE_PATTERNS = [
   'agent.js',
   'soul.md',
+  'README.md',
   'lib/',
   'skills/',
   'scripts/',
   'config/reflect.md',
   'config/agent.json',
+  'config/presets/',
+  'docs/',
   'package.json',
 ];
 
