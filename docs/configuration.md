@@ -31,14 +31,15 @@ You only need to include the keys you want to change:
     "scanIntervalMs": 300000,      // Scan frequency (default 5 min)
     "positionCheckMs": 30000,      // Monitor check interval (default 30s)
     "maxOpenPositions": 3,         // Max simultaneous positions
-    "entryBudgetSol": 0.01,        // SOL per trade entry
-    "minScanScore": 45,            // Min dip-reversal score to buy (0–100)
-    "minLiquidity": 75000,         // Min pool liquidity in USD
+    "entryBudgetSol": 0.005,       // SOL per trade entry
+    "minScanScore": 55,            // Min dip-reversal score to buy (0–100)
+    "minLiquidity": 50000,         // Min pool liquidity in USD
     "stopLossPct": -6,             // Hard stop-loss %
-    "takeProfitPct": 12,           // Take-profit %
+    "takeProfitPct": 25,           // Take-profit %
     "maxHoldMinutes": 45,          // Max hold before forced exit
     "trailingStopActivatePct": 4,  // Trailing stop activates at +4%
-    "trailingStopDistancePct": 3   // Trails 3% below peak
+    "trailingStopDistancePct": 3,  // Trails 3% below peak
+    "buyCooldownMinutes": 60       // Skip re-entry on same mint for this long after exit
   }
 }
 ```
@@ -93,6 +94,28 @@ You only need to include the keys you want to change:
 }
 ```
 
+## Agent Loop (LLM Strategy)
+
+The agent loop runs every 90 minutes. It gives the LLM a market/performance brief and lets it set the session strategy for the next window.
+
+```json
+{
+  "agentLoop": {
+    "intervalMs": 5400000   // Strategy reasoning interval (default 90 min)
+  }
+}
+```
+
+**Session modes** the LLM can set:
+
+| Mode | Behaviour |
+|------|-----------|
+| `active` | Scanner buys best scoring candidate automatically |
+| `selective` | Each candidate passes through a quick LLM approve/reject gate before buying |
+| `watchOnly` | Scanner runs and broadcasts signals but does not buy |
+
+The LLM can also set a `patternFilter` (e.g. `["REVERSAL"]`), a `minScoreOverride`, and a `maxBuysThisSession` cap. Strategy is saved to `data/session_strategy.json` and expires after 90 min.
+
 ## Reflect & Heartbeat
 
 ```json
@@ -102,7 +125,8 @@ You only need to include the keys you want to change:
     "autoApply": true        // Auto-apply config suggestions to agent.local.json
   },
   "heartbeat": {
-    "intervalMs": 300000     // Heartbeat message interval (default 5 min)
+    "intervalMs": 300000,       // Heartbeat message interval (default 5 min)
+    "contextRefreshMs": 1800000 // How often to refresh SOL price + Fear & Greed cache (default 30 min)
   }
 }
 ```

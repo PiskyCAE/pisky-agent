@@ -35,30 +35,8 @@ if (fs.existsSync(envPath)) {
 // Values in agent.local.json deep-merge over agent.json, so you only need to
 // include the keys you want to change — not the entire config.
 
-const CFG_PATH       = path.join(__dirname, 'config/agent.json');
-const CFG_LOCAL_PATH = path.join(__dirname, 'config/agent.local.json');
-
-function _deepMerge(base, override) {
-  const out = { ...base };
-  for (const [k, v] of Object.entries(override)) {
-    if (v && typeof v === 'object' && !Array.isArray(v) && typeof out[k] === 'object') {
-      out[k] = _deepMerge(out[k], v);
-    } else {
-      out[k] = v;
-    }
-  }
-  return out;
-}
-
-let cfg = JSON.parse(fs.readFileSync(CFG_PATH, 'utf8'));
-if (fs.existsSync(CFG_LOCAL_PATH)) {
-  try {
-    const local = JSON.parse(fs.readFileSync(CFG_LOCAL_PATH, 'utf8'));
-    cfg = _deepMerge(cfg, local);
-  } catch (e) {
-    process.stderr.write(`[AGENT] Warning: config/agent.local.json parse error — ${e.message}\n`);
-  }
-}
+const { loadConfig } = require('./lib/config');
+let cfg = loadConfig();
 
 const RPC_URL      = process.env.HELIUS_RPC_URL     || 'https://api.mainnet-beta.solana.com';
 const INTERNAL_KEY = process.env.PISKY_INTERNAL_KEY || '';

@@ -15,7 +15,9 @@
     "takeProfitPct": 25,
     "maxHoldMinutes": 45,
     "trailingStopActivatePct": 4,
-    "trailingStopDistancePct": 3
+    "trailingStopDistancePct": 3,
+    "buyCooldownMinutes": 60,
+    "_strategy_note": "buyCooldownMinutes: skip re-entry on the same mint for this many minutes after closing a position."
   },
   "pisky": {
     "minPiskyBalance": 5000,
@@ -51,7 +53,8 @@
   },
   "heartbeat": {
     "intervalMs": 300000,
-    "_note": "How often to run a proactive check-in (default 5 min). Set to 0 to disable."
+    "contextRefreshMs": 1800000,
+    "_note": "intervalMs: proactive check-in cadence (default 5 min, 0 to disable). contextRefreshMs: how often to refresh cached SOL price + Fear & Greed index (default 30 min)."
   },
   "swarm": {
     "enabled": true,
