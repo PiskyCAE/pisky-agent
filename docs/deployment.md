@@ -84,7 +84,7 @@ node scripts/update.js          # Show what would change (dry run)
 node scripts/update.js --apply  # Apply safe updates, skip your files
 ```
 
-The update script applies changes to `lib/`, `skills/`, `agent.js`, and `package.json` — and skips `data/`, `.env`, `soul.local.md`, and `config/agent.local.json`.
+The update script applies changes to `lib/`, `skills/`, `scripts/`, `agent.js`, and `package.json` — and skips `data/`, `.env`, `soul.local.md`, and `config/agent.local.json`.
 
 Your agent can also do this itself: tell it *"check for updates and apply them"* and it will invoke the updater via `run_script`.
 
