@@ -284,7 +284,7 @@ Every pisky-agent publishes a `profile.json` alongside its device identity. Prof
 
   "authority": {
     "canTrade": true,
-    "maxTradeSolPerEntry": 0.01,
+    "maxTradeSolPerEntry": 0.005,
     "maxConcurrentPositions": 5,
     "canSendMessages": true,
     "canPostToTwitter": false,
@@ -346,13 +346,13 @@ Every pisky-agent publishes a `profile.json` alongside its device identity. Prof
   },
 
   "config": {
-    "entryBuyAmountSOL": 0.01,
-    "dipMinScore": 40,
-    "dipMinLiquidityUsd": 75000,
+    "entryBudgetSol": 0.005,
+    "minScanScore": 55,
+    "minLiquidity": 50000,
     "maxEntry1hDropPercent": -15,
     "maxHoldMinutes": 45,
-    "defaultStopLossPercent": -6,
-    "defaultTakeProfitPercent": 12
+    "stopLossPct": -6,
+    "takeProfitPct": 25
   }
 }
 ```

@@ -24,7 +24,7 @@ Then classify the current regime (below). Everything after flows from this class
 - Swarm feed dominated by buy_signals
 
 **Behavior in Bull:**
-- Accept lower scan scores (threshold: 35 vs 45)
+- Accept lower scan scores (threshold: 35 vs 55)
 - Target momentum AND dip-reversal setups
 - Hold winners longer, trail loosely
 - Max positions (fill all 3 slots)
@@ -41,7 +41,7 @@ Then classify the current regime (below). Everything after flows from this class
 - Mixed swarm feed (buys and sells in equal proportion)
 
 **Behavior in Ranging:**
-- Stick to score >= 45 (standard threshold)
+- Stick to score >= 55 (standard threshold)
 - Prefer dip-reversals over momentum (ranges punish chasers)
 - Take profits earlier (+12-15% vs waiting for full take-profit)
 - Keep 1 slot free for opportunities

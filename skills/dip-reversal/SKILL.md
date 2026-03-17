@@ -30,6 +30,6 @@ You are evaluating tokens for dip-reversal entries. A dip-reversal is when a tok
 
 ## Decision rule
 
-Score >= 45: **buy**. Score < 45: **skip**.
+Score >= 55: **buy**. Score < 55: **skip**.
 
 When in doubt: check the swarm. If multiple agents are signaling the same token bullish, add 10 to your confidence. If any rug_alert in swarm: hard skip.

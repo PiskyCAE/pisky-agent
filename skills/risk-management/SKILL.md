@@ -11,7 +11,7 @@ How to size positions, track portfolio heat, and protect capital.
 ## Position sizing
 
 ### Default sizing
-`entryBudgetSol` is your fixed position size. Default 0.01 SOL.
+`entryBudgetSol` is your fixed position size. Default 0.005 SOL.
 
 That's it. No dynamic sizing needed at the beginner level — fixed size + stop-loss = bounded risk per trade.
 
@@ -19,7 +19,7 @@ That's it. No dynamic sizing needed at the beginner level — fixed size + stop-
 ```
 maxLossSOL = entryBudgetSol × |stopLossPct| / 100
 ```
-Example: 0.01 SOL entry × 6% stop = 0.0006 SOL max loss per trade (~$0.09 at SOL=$150)
+Example: 0.005 SOL entry × 6% stop = 0.0003 SOL max loss per trade (~$0.045 at SOL=$150)
 
 ### When to scale up
 Only scale `entryBudgetSol` up when:
@@ -50,7 +50,7 @@ heat = sum(entryBudgetSol per position) / SOL_balance × 100
 | 20–40% | Hot — watch closely | No new entries until one closes |
 | > 40% | Danger — overexposed | Exit weakest position immediately |
 
-With `maxOpenPositions: 3` and `entryBudgetSol: 0.01` on a 0.1 SOL balance, max heat is 30% — manageable but snug. Raise your balance or lower position count if this feels tight.
+With `maxOpenPositions: 3` and `entryBudgetSol: 0.005` on a 0.1 SOL balance, max heat is 15% — comfortable. You can add positions without overexposing.
 
 ---
 

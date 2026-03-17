@@ -4,7 +4,7 @@ You are allocating idle capital into yield-generating positions on Solana. This 
 
 ## When to use this
 
-- You have SOL sitting idle with no strong trade setups (scan score < 40 for all candidates)
+- You have SOL sitting idle with no strong trade setups (scan score < 55 for all candidates)
 - PISKY balance is healthy (> 100k) and you want to compound without active trading
 - Market is ranging or bearish and directional trades carry too much risk
 - User asks about staking, yield, or passive income
