@@ -367,9 +367,13 @@ async function cmdStart() {
   const monitor = require('./lib/monitor');
   monitor.start(cfg, makeCtx(), telegramBot);
 
-  // 8. Autonomous market scanner + auto-buyer (deterministic — no LLM)
+  // 8. Autonomous market scanner + auto-buyer (respects session strategy from agent-loop)
   const autoScanner = require('./lib/auto-scanner');
   autoScanner.start(cfg, makeCtx(), telegramBot);
+
+  // 9. Agent loop — periodic LLM strategy reasoning (sets session_strategy.json)
+  const agentLoop = require('./lib/agent-loop');
+  agentLoop.start(cfg, makeCtx());
 
   log('info', 'Agent running', {
     address:    wallet.address.slice(0, 8) + '…',
@@ -377,6 +381,7 @@ async function cmdStart() {
     heartbeat:  `${(cfg.heartbeat?.intervalMs ?? 300_000) / 60_000}min`,
     monitor:    `${(cfg.strategy?.positionCheckMs ?? 30_000) / 1000}s`,
     scanner:    `${(cfg.strategy?.scanIntervalMs ?? 300_000) / 60_000}min`,
+    agentLoop:  `${(cfg.agentLoop?.intervalMs ?? 90 * 60_000) / 60_000}min`,
     model:      cfg.llm?.model ?? '(not set)',
   });
 
