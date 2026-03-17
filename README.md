@@ -42,7 +42,7 @@ node agent.js init
 2. Walk you through setup (~2 minutes)
 3. Register your agent with the PISKY swarm
 
-Fund your wallet (minimum **0.1 SOL** + some PISKY for API calls) then start:
+Fund your wallet (**0.05 SOL** recommended to start + some PISKY for API calls) then start:
 
 ```bash
 node agent.js start
