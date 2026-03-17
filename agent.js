@@ -188,7 +188,7 @@ async function cmdInit() {
       },
       authority: {
         canTrade:              true,
-        maxTradeSolPerEntry:   cfg.strategy?.entryBudgetSol ?? 0.01,
+        maxTradeSolPerEntry:   cfg.strategy?.entryBudgetSol ?? 0.005,
         maxConcurrentPositions: cfg.strategy?.maxOpenPositions ?? 3,
         canSendMessages:       true,
         canModifyOwnConfig:    true,
@@ -230,7 +230,7 @@ async function cmdInit() {
 
   console.log('\n--- Fund your agent ---');
   console.log(`Address: ${address}`);
-  console.log('Minimum: 0.1 SOL (tx fees + trades)');
+  console.log('Recommended: 0.05 SOL to start (covers fees + initial trades)');
   console.log('\nThen run: node agent.js start\n');
 }
 

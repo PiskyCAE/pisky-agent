@@ -1,21 +1,53 @@
 # Deployment
 
-## Run as a systemd Service
+## Keeping the Agent Running
 
-Keep your agent running after you close the terminal or reboot.
+`node agent.js start` runs in the foreground. For a server or unattended deployment you'll want it to survive terminal close and restart automatically on failure. There are two common approaches:
+
+### Option 1 — systemd (Linux servers)
+
+A service unit template is provided at `deploy/pisky-agent.service`. Install it for your user:
 
 ```bash
-# Enable and start
+# 1. Copy and edit the service file — update WorkingDirectory to your install path
+cp deploy/pisky-agent.service ~/.config/systemd/user/pisky-agent.service
+nano ~/.config/systemd/user/pisky-agent.service
+
+# 2. Enable and start
+systemctl --user daemon-reload
 systemctl --user enable --now pisky-agent
 
-# View live logs
+# 3. View live logs
 journalctl --user -u pisky-agent -f
 
-# Stop
+# 4. Stop or restart
 systemctl --user stop pisky-agent
+systemctl --user restart pisky-agent
 ```
 
-Service file: `~/.config/systemd/user/pisky-agent.service`
+> **Note:** `systemctl --user` services only run while you're logged in by default. To keep them running after logout, run: `loginctl enable-linger $USER`
+
+### Option 2 — PM2 (cross-platform)
+
+PM2 works on Linux, macOS, and Windows and handles restart-on-failure and log rotation without systemd.
+
+```bash
+npm install -g pm2
+pm2 start agent.js --name pisky-agent -- start
+pm2 save           # persist across reboots
+pm2 startup        # follow the printed instructions once
+pm2 logs pisky-agent
+```
+
+### Simplest option — screen / tmux
+
+If you just want to detach and leave it running:
+
+```bash
+screen -S pisky
+node agent.js start
+# Ctrl+A, D to detach — reconnect with: screen -r pisky
+```
 
 ---
 
@@ -48,8 +80,8 @@ Add to `config/agent.local.json`:
 Pull upstream improvements without losing your customizations:
 
 ```bash
-node scripts/update.js          # Show what would change (dry run)
-node scripts/update.js --apply  # Apply safe updates, skip your files
+node update.js          # Show what would change (dry run)
+node update.js --apply  # Apply safe updates, skip your files
 ```
 
 The update script applies changes to `lib/`, `skills/`, `agent.js`, and `package.json` — and skips `data/`, `.env`, `soul.local.md`, and `config/agent.local.json`.

@@ -1,0 +1,30 @@
+# pisky-agent systemd user service
+#
+# Install: cp deploy/pisky-agent.service ~/.config/systemd/user/pisky-agent.service
+# Then:    systemctl --user daemon-reload
+#          systemctl --user enable --now pisky-agent
+#
+# Logs:    journalctl --user -u pisky-agent -f
+#
+# IMPORTANT: Update WorkingDirectory to your actual install path before enabling.
+
+[Unit]
+Description=pisky-agent — autonomous Solana trading agent
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+WorkingDirectory=/home/YOUR_USER/pisky-agent
+ExecStart=/usr/bin/node agent.js start
+Restart=on-failure
+RestartSec=10
+StandardOutput=journal
+StandardError=journal
+
+# Keep sensitive env vars out of the unit file — load them from .env in agent.js
+# If you need to pass env vars here instead, use:
+# Environment="OPENROUTER_API_KEY=sk-or-..."
+
+[Install]
+WantedBy=default.target
