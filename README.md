@@ -73,6 +73,7 @@ node agent.js wallet      # Show wallet balances (SOL + PISKY)
 node agent.js status      # Show open positions + P&L
 node agent.js scan        # Run one market scan, print top candidates
 node agent.js send "..."  # Send a message through the LLM
+node agent.js logs        # Recent activity: trades, scans, reflects (node agent.js logs 100 for more)
 ```
 
 ---

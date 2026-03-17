@@ -367,6 +367,75 @@ async function cmdStart() {
   process.on('SIGTERM', () => { log('info', 'Shutdown'); process.exit(0); });
 }
 
+// ── CLI: logs — recent agent activity in human-readable form ──────────────────
+
+function cmdLogs() {
+  const LOG_FILE = path.join(__dirname, 'logs/processor.log');
+  const N        = parseInt(process.argv[3]) || 40;
+
+  if (!fs.existsSync(LOG_FILE)) {
+    console.log('No log file yet. Start the agent first: node agent.js start');
+    return;
+  }
+
+  // Read tail of log file (last ~200KB is plenty)
+  const stat = fs.statSync(LOG_FILE);
+  const readSize = Math.min(stat.size, 200 * 1024);
+  const buf  = Buffer.alloc(readSize);
+  const fd   = fs.openSync(LOG_FILE, 'r');
+  fs.readSync(fd, buf, 0, readSize, stat.size - readSize);
+  fs.closeSync(fd);
+  const lines = buf.toString('utf8').split('\n').filter(Boolean);
+
+  // Rules: match log line → human-readable label
+  // Handler-generated lines are more specific (e.g. "buy_token ABC 0.005 SOL")
+  // Processor generic lines have raw JSON — we skip those to avoid duplicates
+  const RULES = [
+    // Trade executions (handler-level lines, not the generic processor tool log)
+    { re: /Tool: buy_token\s+(\S+)\s+([\d.]+) SOL/,   fmt: (m) => `BUY    ${m[1]}  ${m[2]} SOL` },
+    { re: /Tool: sell_token\s+(\S+)\s+(\d+)%/,         fmt: (m) => `SELL   ${m[1]}  ${m[2]}% of position` },
+    { re: /Tool: send_token\s+([\d.,]+)\s+→\s+(\S+)/,  fmt: (m) => `SEND   ${m[1]} tokens → ${m[2]}` },
+    // Scanner
+    { re: /Scan returned (\d+) candidate/,              fmt: (m) => `SCAN   ${m[1]} candidates found` },
+    { re: /(\d+) candidates after filters/,             fmt: (m) => `SCAN   ${m[1]} passed filters` },
+    { re: /No candidates passed/,                       fmt: ()  => `SCAN   no candidates passed gates` },
+    // Reflect
+    { re: /Done \[reflect\]/,                           fmt: ()  => `REFLECT  cycle complete` },
+    // Heartbeat exceptions
+    { re: /Status built — (\d+) exception/,             fmt: (m) => `HEARTBEAT  ${m[1]} exception(s)` },
+    // Startup / shutdown
+    { re: /=== pisky-agent v([\d.]+) starting ===/,     fmt: (m) => `STARTED  v${m[1]}` },
+    { re: /\[AGENT\].*Shutdown/,                        fmt: ()  => `STOPPED` },
+    // Telegram messages received
+    { re: /\[TG\].*Message from (.+?):/,                fmt: (m) => `MSG    from ${m[1]}` },
+    // Trading paused/resumed
+    { re: /Trading paused/,                             fmt: ()  => `PAUSED   new buys paused` },
+    { re: /Trading resumed/,                            fmt: ()  => `RESUMED  auto-scanner re-enabled` },
+  ];
+
+  const events = [];
+  for (const line of lines) {
+    const tsMatch = line.match(/^\[(\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2})/);
+    if (!tsMatch) continue;
+    const ts      = new Date(tsMatch[1]);
+    const timeStr = ts.toLocaleString('en-US', {
+      month: 'short', day: 'numeric',
+      hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false,
+    });
+    for (const rule of RULES) {
+      const m = line.match(rule.re);
+      if (m) { events.push(`${timeStr}  ${rule.fmt(m)}`); break; }
+    }
+  }
+
+  const recent = events.slice(-N);
+  if (!recent.length) { console.log('No activity recorded yet.'); return; }
+
+  console.log(`\nAgent activity — last ${recent.length} events:\n`);
+  recent.forEach(e => console.log(' ', e));
+  console.log();
+}
+
 // ── Entry ─────────────────────────────────────────────────────────────────────
 
 const cmd     = process.argv[2];
@@ -380,6 +449,7 @@ const handlers = {
   status: cmdStatus,
   scan:   cmdScan,
   send:   async () => cmdSend(sendMsg),
+  logs:   async () => cmdLogs(),
 };
 
 (handlers[cmd] ?? cmdStart)().catch(err => {
