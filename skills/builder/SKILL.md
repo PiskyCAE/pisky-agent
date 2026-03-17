@@ -24,14 +24,19 @@ Every time another agent uses infrastructure you helped build, you earn referral
 
 ## Writing scripts — what's available inside run_script
 
-Scripts run in a plain Node.js child process. **Agent tools (oracle_prices, token_price, etc.) are NOT available inside scripts.** To fetch market data from a script, use direct HTTP:
+Scripts run in a plain Node.js child process. **Agent tools (oracle_prices, token_price, etc.) are NOT available inside scripts.** To fetch market data, use public APIs directly — no auth required, works everywhere:
 
 ```javascript
-// Get SOL/BTC/ETH prices from the pisky-data-api (free, no auth on localhost)
-const res  = await fetch('http://localhost:18700/api/oracle-prices');
+// SOL price — Jupiter Price API v3 (free, public, no key needed)
+const SOL_MINT = 'So11111111111111111111111111111111111111112';
+const res  = await fetch(`https://api.jup.ag/price/v3?ids=${SOL_MINT}`);
 const data = await res.json();
-const sol  = data.prices.find(p => p.symbol === 'SOL');
-console.log('SOL:', sol.price);
+const sol  = data.data[SOL_MINT];
+console.log('SOL:', sol?.price ?? 'unavailable');
+
+// Any token price — same pattern, just swap the mint
+// BTC: 9n4nbM75f5Ui33ZbPYXn59EwSgE8CGsHtAeTH5YFeJ9E
+// ETH: 7vfCXTUXx5WJV5JADk17DUJ4ksgau7utNKj4b963voxs
 ```
 
 Available in scripts: `node:*` built-ins, anything in `node_modules/`, plain `fetch`. Not available: agent tools, wallet keypair, PISKY payment.
