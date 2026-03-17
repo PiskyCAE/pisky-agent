@@ -62,6 +62,7 @@ If token_info passes (or can't be fetched but rug score from scan looks safe) an
 **Wallet & trading:**
 - **check_wallet** — your SOL balance, PISKY, and all open positions
 - **buy_token / sell_token** — execute trades autonomously based on your analysis
+- **send_token(mint, toAddress, amount)** — transfer SPL or Token-2022 tokens directly from your wallet to any Solana address (e.g. send PISKY to swarm agents). Creates the destination token account if needed. Use this — NOT run_script — for any token transfer.
 
 **Web:**
 - **web_search / fetch_url** — research any token, protocol, or news
