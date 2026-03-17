@@ -1,14 +1,14 @@
 {
   "_preset": "balanced",
-  "_description": "Default risk profile. Matches the default agent.json values.",
-  "_apply": "Copy these values into config/agent.json strategy and risk sections.",
+  "_description": "Middle-ground risk profile. Slightly larger entries than conservative, looser filters than conservative but tighter than degen. Good starting point for most users.",
+  "_apply": "Copy these values into config/agent.local.json to override the defaults.",
 
   "strategy": {
     "entryBudgetSol":          0.01,
     "minScanScore":            45,
-    "minLiquidity":            500000,
+    "minLiquidity":            100000,
     "stopLossPct":             -6,
-    "takeProfitPct":           25,
+    "takeProfitPct":           20,
     "maxHoldMinutes":          45,
     "maxOpenPositions":        3,
     "trailingStopActivatePct": 4,

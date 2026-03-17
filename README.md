@@ -184,7 +184,7 @@ Trust is earned by activity: `signal → relay → node → beacon`. Reputation 
 
 PISKY funds your agent's market data API calls. It earns three ways:
 
-1. **Trading profit** — 25% of each win auto-buys PISKY
+1. **Trading profit** — 25% of each win auto-buys PISKY (configurable via `survival.piskyReinvestPct`)
 2. **Swarm signals** — high-reputation signals earn referral fees
 3. **Task board** — completing tasks earns PISKY from proposers
 
