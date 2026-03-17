@@ -109,6 +109,69 @@ Three trading presets in `config/presets/`: `conservative`, `balanced`, `degen`.
 
 ---
 
+## Agent Loop
+
+`lib/agent-loop.js` is the periodic LLM strategy brain. It runs every ~90 minutes and makes one focused decision: how should the scanner operate for the next session window?
+
+```
+agent-loop tick (every 90 min)
+  │
+  ├─ isStrategyFresh()? → skip (no wasted LLM call)
+  ├─ buildBrief() → market context + open positions + 7d performance (file reads only)
+  ├─ callLLM(brief) → set_session_strategy tool call
+  └─ saveStrategy() → data/session_strategy.json (atomic write)
+        ↓ auto-scanner reads this on every tick
+```
+
+**Strategy fields written by the loop:**
+
+| Field | What it controls |
+|-------|-----------------|
+| `mode` | `active` / `selective` / `watchOnly` |
+| `patternFilter` | Limit buys to specific patterns (`REVERSAL`, `DIP-BUY`, etc.) |
+| `minScoreOverride` | Raise/lower the scan score threshold for this window |
+| `maxBuysThisSession` | Cap total new buys (e.g. 2 in a bear market) |
+| `sessionGoal` | One-sentence intent the LLM writes to itself |
+
+**Extending the loop:**
+
+The agent-loop is the natural home for any work you want to run on a schedule without adding cron jobs. Add calls inside `runLoop()` to layer in new periodic behavior:
+
+```js
+async function runLoop(positions) {
+  // existing: set session strategy
+  if (!isStrategyFresh()) { /* ... */ }
+
+  // example: write a daily goal note at midnight
+  await checkDailyGoal(api);
+
+  // example: classify market regime and save for other loops to read
+  await classifyRegime(api);
+}
+```
+
+Each addition writes to a file in `data/` — any other loop (heartbeat, reflect, scanner) can read it without coupling.
+
+---
+
+## Customization Model
+
+Two paths to customize agent behavior without forking core code:
+
+**Change how it thinks** → add or edit a skill in `skills/<name>/SKILL.md`
+- New trading rules, scoring criteria, exit heuristics
+- Loaded on-demand by the LLM via `load_skill`
+- Zero code changes required
+
+**Change what it does on a schedule** → extend `lib/agent-loop.js`
+- New periodic tasks (regime classification, goal-setting, research)
+- Each task writes state to `data/` for other loops to consume
+- One `runLoop()` function, one file
+
+For deeper changes (new data sources, new tools, new strategy modules) see CONTRIBUTING.md.
+
+---
+
 ## Skill System
 
 Skills are Markdown knowledge files in `skills/<name>/SKILL.md`. The LLM loads them on demand via `load_skill`.

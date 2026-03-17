@@ -124,6 +124,42 @@ That's it — `lib/tools.js` picks up new tools automatically via spread merge.
 
 ---
 
+## Extending the Agent Loop
+
+`lib/agent-loop.js` runs every ~90 minutes and sets the session strategy. It's the natural home for any periodic scheduled work — the equivalent of adding a cron job, but inside the long-running process.
+
+Add your logic inside `runLoop()`:
+
+```js
+async function runLoop(positions) {
+  // existing strategy logic...
+  if (!isStrategyFresh()) { /* ... */ }
+
+  // add your periodic task here
+  await myPeriodicTask(positions);
+}
+```
+
+**Pattern:** write state to `data/` so other loops can consume it.
+
+```js
+async function classifyRegime(api) {
+  const ctx = JSON.parse(fs.readFileSync(CONTEXT_FILE, 'utf8'));
+  const regime = ctx.sol?.change24h > 2 ? 'bull' : ctx.sol?.change24h < -5 ? 'bear' : 'ranging';
+  fs.writeFileSync(path.join(DATA_DIR, 'regime.json'), JSON.stringify({ regime, updatedAt: new Date() }));
+}
+```
+
+Then any other module (heartbeat, scanner, reflect) reads `data/regime.json` without any coupling to the loop.
+
+**Good uses for the agent loop:**
+- Market regime classification (bull/bear/ranging)
+- Daily session goal-setting (morning aggressive, evening watchOnly)
+- Swarm health digest (summarize peer signals into a note)
+- Research tasks (fetch news, summarize into `data/`)
+
+---
+
 ## Adding a Strategy
 
 Custom strategy scripts live in `lib/strategies/`. See `lib/strategies/README.md` for the template and conventions.
