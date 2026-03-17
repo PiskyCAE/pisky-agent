@@ -292,6 +292,26 @@ function cmdSend(message) {
 // ── Main: start — full agent launch ──────────────────────────────────────────
 
 async function cmdStart() {
+  // ── Single-instance guard ──────────────────────────────────────────────────
+  const PID_FILE = path.join(__dirname, 'data/agent.pid');
+  fs.mkdirSync(path.join(__dirname, 'data'), { recursive: true });
+  if (fs.existsSync(PID_FILE)) {
+    const existingPid = parseInt(fs.readFileSync(PID_FILE, 'utf8').trim(), 10);
+    if (existingPid && existingPid !== process.pid) {
+      try {
+        process.kill(existingPid, 0); // throws if process doesn't exist
+        console.error(`ERROR: Agent is already running (PID ${existingPid}). Stop it first or delete data/agent.pid.`);
+        process.exit(1);
+      } catch {
+        // Stale PID file — process is gone, proceed
+      }
+    }
+  }
+  fs.writeFileSync(PID_FILE, String(process.pid));
+  const removePid = () => { try { fs.unlinkSync(PID_FILE); } catch {} };
+  process.on('exit', removePid);
+  // ─────────────────────────────────────────────────────────────────────────
+
   initModules();
 
   log('info', `=== pisky-agent v${PKG_VERSION} starting ===`);
@@ -363,8 +383,8 @@ async function cmdStart() {
     model:      cfg.llm?.model ?? '(not set)',
   });
 
-  process.on('SIGINT',  () => { log('info', 'Shutdown'); process.exit(0); });
-  process.on('SIGTERM', () => { log('info', 'Shutdown'); process.exit(0); });
+  process.on('SIGINT',  () => { log('info', 'Shutdown'); removePid(); process.exit(0); });
+  process.on('SIGTERM', () => { log('info', 'Shutdown'); removePid(); process.exit(0); });
 }
 
 // ── CLI: logs — recent agent activity in human-readable form ──────────────────
