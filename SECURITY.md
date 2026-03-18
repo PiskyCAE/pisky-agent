@@ -14,6 +14,24 @@ pisky-agent holds a real Solana wallet and executes real trades. Security matter
 - The `read_file` tool explicitly blocks reading `.env` — even the LLM cannot see it
 - The `run_script` tool strips `AGENT_KEYPAIR` from the child process environment — scripts cannot sign transactions
 
+### Recommended: Use Infisical for Secret Management
+
+[Infisical](https://infisical.com) is a secrets manager that lets you store and inject secrets (like `AGENT_KEYPAIR`) into your environment without ever having them sit in plaintext `.env` files on disk.
+
+Instead of a static `.env` file, Infisical injects secrets at runtime:
+
+```bash
+infisical run -- node agent.js
+```
+
+Benefits for pisky-agent deployments:
+- Secrets are encrypted at rest and in transit — your private key never lives in a plaintext file on your server
+- Secrets are centrally managed — rotate your key once, all agents pick it up automatically
+- Audit log — you can see exactly when and where your secrets were accessed
+- Works with systemd: set `ExecStart=infisical run -- node agent.js` in your service unit
+
+Infisical has a free tier that covers personal and small-team use. See their [quick-start docs](https://infisical.com/docs/getting-started/overview) to get set up.
+
 If you believe your key has been exposed:
 1. Stop the agent immediately: `systemctl --user stop pisky-agent`
 2. Transfer all funds to a new wallet
