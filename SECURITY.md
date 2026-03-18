@@ -90,7 +90,7 @@ The bot only responds to `heartbeatChatId` (your user ID) by default. If you wan
 
 If you find a security issue — especially anything involving wallet access, key exposure, or trade manipulation — please report it privately:
 
-- **Telegram DM:** [@PiskyCAE](https://t.me/PiskyCAE)
+- **Telegram DM:** [@piskydev](https://t.me/piskydev)
 
 Please do not open a public GitHub issue for security vulnerabilities. Give us a chance to patch before disclosure.
 
