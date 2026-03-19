@@ -1,5 +1,7 @@
 # Skill: Playwright Browser Automation
 
+> **Optional upgrade.** Playwright is not installed or required by default. Use this skill when you need to research tokens or protocols on sites that block plain HTTP fetches (Cloudflare-protected pages, JS-rendered content). Install it when needed: `npx playwright install --with-deps chromium`. Most research tasks work fine with `web_search` and `fetch_url` — only reach for Playwright when those fail.
+
 Use this skill to research tokens, protocols, or any web resource that requires a real browser. Playwright controls a headless Chromium browser — it must be installed first (`npx playwright install chromium`).
 
 ## When to use this skill

@@ -10,7 +10,7 @@
 //   node scripts/update.js --help   — show this help
 //
 // What is SAFE to update (overwritten from upstream):
-//   lib/*.js, agent.js, soul.md, walkthrough.md, ARCHITECTURE.md, CONTRIBUTING.md,
+//   lib/*.js, agent.js, soul.md, ARCHITECTURE.md, CONTRIBUTING.md,
 //   SECURITY.md, config/reflect.md, config/heartbeat.md, config/agent.json,
 //   skills/, scripts/, docs/, package.json
 //
@@ -45,7 +45,6 @@ const SAFE_PATTERNS = [
   'agent.js',
   'soul.md',
   'README.md',
-  'walkthrough.md',
   'ARCHITECTURE.md',
   'CONTRIBUTING.md',
   'SECURITY.md',

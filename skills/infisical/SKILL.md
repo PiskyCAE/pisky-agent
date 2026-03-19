@@ -1,5 +1,7 @@
 # Skill: Secrets Management
 
+> **Optional upgrade.** The standard `.env` file is sufficient for most single-agent deployments and is what the setup wizard configures. This skill covers Infisical — a centralized secrets manager useful for teams, multi-agent swarms, or production environments where rotating credentials or shared secrets management is needed. You do not need this to run pisky-agent.
+
 How to manage secrets for pisky-agent. The `.env` file is the primary mechanism for most deployments. Infisical is an optional upgrade for teams, multi-agent setups, or production environments that need centralized secret management.
 
 ## Standard setup — .env file
