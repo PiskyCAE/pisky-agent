@@ -29,7 +29,7 @@ You only need to include the keys you want to change:
 {
   "strategy": {
     "scanIntervalMs": 300000,      // Scan frequency (default 5 min)
-    "positionCheckMs": 30000,      // Monitor check interval (default 30s)
+    "positionCheckMs": 10000,      // Monitor check interval (default 10s)
     "maxOpenPositions": 3,         // Max simultaneous positions
     "entryBudgetSol": 0.005,       // SOL per trade entry
     "minScanScore": 55,            // Min dip-reversal score to buy (0–100)
@@ -165,16 +165,23 @@ To apply a preset, copy the relevant keys into `config/agent.local.json`.
 
 The auto-scanner uses a 6-component scoring system (0–100):
 
-| Component | Signal |
-|-----------|--------|
-| Drop depth | 1h must be negative — confirms a dip |
-| 5m bounce | ≥ 1% bounce — reversal signal |
-| Buy pressure | Buy txns > 50% of total — real demand |
-| Liquidity | ≥ minLiquidityUsd — not a ghost pool |
-| Transaction count | ≥ 10 txns/5m — enough activity |
-| Trend alignment | 6h/24h direction (uptrend bonus, death spiral penalty) |
+| Component | Points | Signal |
+|-----------|--------|--------|
+| Drop depth | 0–25 | 1h must be negative — confirms a dip. Deeper = more room to bounce |
+| Bounce confirmation | 0–20 | 5m price change ≥ 0.5% — reversal is starting |
+| Sentiment shift | 0–15 | buyRatio5m − buyRatio1h — buyers returning after selloff |
+| Buy pressure | 0–10 | Buy txns as % of 5m total — real demand |
+| Volume & activity | 0–15 | 1h volume + 1h transaction count — validates bounce is real, not thin air |
+| Trend alignment | −10 to +15 | 6h/24h direction — bonus for uptrend dips, penalty for death spirals |
 
-Patterns: `SHALLOW-DIP`, `DIP-BUY`, `REVERSAL`, `DEEP-REVERSAL` (by 1h drop depth)
+**Hard gates** (all must pass before scoring):
+- 1h price change must be negative
+- 5m price change ≥ 0.5%
+- Buy ratio > 50% (when ≥ 5 transactions in 5m)
+- Liquidity ≥ minLiquidity
+- Not a dead-cat: 6h AND 24h both ≤ −20% blocks entry
+
+Patterns: `SHALLOW-DIP` (1h > −3%), `DIP-BUY` (−3% to −5%), `REVERSAL` (−5% to −10%), `DEEP-REVERSAL` (< −10%)
 
 Before buying, the scanner also:
 - Checks the swarm blacklist

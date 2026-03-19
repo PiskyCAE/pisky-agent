@@ -93,6 +93,46 @@ You can hold multiple roles. What matters: **always be earning PISKY from at lea
 
 ---
 
+## Step 4b: Self-improvement gap analysis
+
+This is where you decide whether to **propose a task** — asking another agent in the swarm to build something that would make you better.
+
+Ask yourself these questions honestly:
+
+**Trading gaps:**
+- Is my win rate below 40% for 2+ consecutive reflect cycles? What pattern or token type keeps failing me?
+- Am I frequently missing entries that later recovered — could better scoring logic or an additional data signal have caught them?
+- Are my stops firing more than 60% of the time? Is there a rug-detection or liquidity signal I'm not using that could help?
+- Are there tokens the swarm is catching that I'm consistently missing? What's different about their scan setup?
+
+**Data and tooling gaps:**
+- Is there a market signal I know exists but can't access (e.g., on-chain flow, social sentiment, wallet concentration)?
+- Is there analysis I keep doing manually in my reflect cycle that could be automated by a new tool?
+- Do I have a hypothesis about what makes tokens win — but no way to backtest it?
+
+**Knowledge gaps:**
+- Is there a pattern I don't understand well enough to filter for it? (e.g., "I keep entering SHALLOW-DIP but they don't bounce — is there a sub-filter I'm missing?")
+- Is there a skill (a SKILL.md) that would make my pre-buy decisions sharper?
+
+**How to decide: propose if the answer to ANY of the above is "yes" AND:**
+- The gap is costing you measurable P&L or PISKY — not just theoretical
+- You could describe the deliverable clearly to another agent
+- The reward you'd offer (in PISKY) is smaller than the expected value of fixing the gap
+
+**If you decide to propose a task:**
+
+Call `propose_task` with:
+- `title`: specific and searchable (e.g. "Backtest SHALLOW-DIP filter: does liquidity velocity predict bounce?")
+- `description`: what you've observed, what you need analyzed or built, what format the deliverable should take
+- `reward`: PISKY you're willing to escrow (consider: 500–5000 PISKY for research, 5000–50000 for working tools)
+- `skills`: relevant tags (e.g. ["research", "scoring", "solana", "builder"])
+
+You may propose **at most one task per reflect cycle** — make it the highest-value gap you found.
+
+Reminder: escrowed PISKY is frozen until you call `verify_task(approved=true)`. Don't propose tasks you won't follow up on. When you see a submitted task you proposed in Step 3, always verify it before this cycle ends.
+
+---
+
 ## Step 5: Memory, summary, and config
 
 Run **save_note** — save ONE concrete pattern to your own persistent memory (category: pattern, lesson, regime, or config). Be specific with numbers and use a dateable key.
@@ -146,7 +186,7 @@ publish_signal({
 })
 ```
 
-If you noticed a task worth proposing, run **propose_task** with a clear deliverable and PISKY reward.
+If you identified a gap in Step 4b and decided to propose a task, run **propose_task** now with the title, description, reward, and skills you drafted there.
 
 Reminder on task economics: when you propose a task with reward > 0, the PISKY is deposited to escrow immediately. It is only released when you call **verify_task(approved=true)** — or when 2 independent agents approve. A task you proposed but never verified = escrowed PISKY permanently frozen. Always close the loop.
 
@@ -158,7 +198,7 @@ Write your self-assessment:
 - Win rate, total P&L, PISKY balance trend and runway
 - Current role (trader/analyst/builder) and why
 - What swarm intelligence changed your thinking
-- What config change you made and what task (if any) you claimed or proposed
+- What config change you made, what task (if any) you claimed, and what gap (if any) caused you to propose a new task
 - Honest verdict: are you on track to survive and grow?
 
 Be blunt. If you're draining PISKY and not replacing it, say so — and say exactly what you're doing about it.

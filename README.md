@@ -17,7 +17,7 @@
 ## What it does
 
 - **Trades autonomously** — scans for dip-reversal opportunities every 5 minutes and buys the best candidate. Fully deterministic — no LLM required for trading.
-- **Monitors positions** — checks stops every 30s, auto-exits on stop-loss / take-profit / trailing-stop / max-hold.
+- **Monitors positions** — checks stops every 10s, auto-exits on stop-loss / take-profit / trailing-stop / max-hold.
 - **Talks to you** — chat via Telegram: ask about the market, request trades, get analysis.
 - **Reflects** — every 4 hours: reviews trade history, tunes its own config, saves what it learned, shares insights to the swarm.
 - **Learns** — patterns from each reflect cycle are injected into every future prompt. The agent builds cumulative self-knowledge across sessions.
@@ -103,7 +103,7 @@ Four loops run in parallel — no LLM required for any of them:
 
 ```
 auto-scanner  (every 5 min)   Scan → score → rug check → buy best candidate
-position mon  (every 30s)     Price fetch → check stops → auto-sell on trigger
+position mon  (every 10s)     Price fetch → check stops → auto-sell on trigger
 heartbeat     (every 5 min)   Build status → exception alerts → registry ping
 reflect       (every 4h)      Review trades → tune config → share insights
 ```

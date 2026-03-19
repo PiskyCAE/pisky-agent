@@ -8,7 +8,7 @@ pisky-agent is an autonomous Solana trading agent built around four parallel loo
 
 ```
 auto-scanner  (every 5 min)   scan → score → rug-check → buy best candidate
-position-mon  (every 30s)     fetch prices → check stops → auto-sell on trigger
+position-mon  (every 10s)     fetch prices → check stops → auto-sell on trigger
 heartbeat     (every 5 min)   build status → alert exceptions → registry ping
 reflect       (every 4h)      review trades → tune config → share swarm insights
 ```
@@ -34,7 +34,7 @@ agent.js                  Entry point — wires all modules together, starts loo
 │
 ├── lib/reflect.js        Self-improvement: survival check → LLM reflect queue → profile refresh
 │
-├── lib/processor.js      Queue-based LLM processor: dequeues messages, runs tool-use loop (max 5 rounds)
+├── lib/processor.js      Queue-based LLM processor: dequeues messages, runs tool-use loop (max 12 rounds)
 │   └── lib/tools.js          Tool definitions (TOOL_DEFINITIONS) + dispatcher (executeTool)
 │       ├── lib/tools/market.js    Market data + research tools
 │       ├── lib/tools/trading.js   Trade execution tools (buy, sell, wallet, pause)
@@ -197,9 +197,11 @@ auto-scanner tick (every 5 min)
   ├─ positions.openPosition() → write data/positions.json
   └─ api.swarmPublish('buy_signal') → alert swarm peers
 
-position-monitor tick (every 30s)
+position-monitor tick (every 10s)
   │
-  ├─ api.tokenPrices(mints[]) → batch fetch prices
+  ├─ DexScreener REST → batch fetch prices (free, no PISKY cost)
+  │    └─ fallback: api.tokenPrices(mints[]) → x402 if DexScreener fails
+  ├─ swarm sell signal check → early exit if peers sold while we're down
   ├─ for each position: check stop-loss / take-profit / trailing / maxHold
   ├─ if triggered:
   │    ├─ swap.sell(mint, rawAmount) → Jupiter Ultra → on-chain tx
@@ -221,7 +223,7 @@ processing/  → message currently being handled
 outgoing/    → completed responses
 ```
 
-`processor.js` runs a loop: dequeue one message → build system prompt → run LLM with tools (up to 5 rounds) → write response to outgoing → Telegram bot picks it up.
+`processor.js` runs a loop: dequeue one message → build system prompt → run LLM with tools (up to 12 rounds) → write response to outgoing → Telegram bot picks it up.
 
 This means:
 - Telegram chat, heartbeat exceptions, and reflect cycles all share the same LLM queue

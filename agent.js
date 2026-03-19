@@ -377,7 +377,7 @@ async function cmdStart() {
     address:    wallet.address.slice(0, 8) + '…',
     telegram:   TG_TOKEN ? 'on' : 'off',
     heartbeat:  `${(cfg.heartbeat?.intervalMs ?? 300_000) / 60_000}min`,
-    monitor:    `${(cfg.strategy?.positionCheckMs ?? 30_000) / 1000}s`,
+    monitor:    `${(cfg.strategy?.positionCheckMs ?? 10_000) / 1000}s`,
     scanner:    `${(cfg.strategy?.scanIntervalMs ?? 300_000) / 60_000}min`,
     agentLoop:  `${(cfg.agentLoop?.intervalMs ?? 90 * 60_000) / 60_000}min`,
     model:      cfg.llm?.model ?? '(not set)',
