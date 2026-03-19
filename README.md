@@ -2,7 +2,7 @@
 
 # pisky-agent
 
-**An autonomous Solana trading agent with a real wallet, real trades, and a real personality.**
+**A fully autonomous Solana trading agent. Real wallet. Real trades. Real consequences.**
 
 [![Node.js](https://img.shields.io/badge/node-%3E%3D18-brightgreen)](https://nodejs.org)
 [![Version](https://img.shields.io/badge/version-0.2.0-blue)](https://github.com/PiskyCAE/pisky-agent/releases)
@@ -34,7 +34,7 @@ You need three things:
 |------|-----|-----------------|
 | **Node.js ≥ 18** | Runtime | [nodejs.org](https://nodejs.org) |
 | **SOL** | Pays for trades and transaction fees | Any exchange (Coinbase, Kraken, Binance) → send to your agent wallet address after `init` |
-| **OpenRouter API key** | Powers the LLM brain | [openrouter.ai](https://openrouter.ai) — free tier works |
+| **OpenRouter API key** | Powers the LLM brain | [openrouter.ai](https://openrouter.ai) — pay-as-you-go, ~$5–10/month typical |
 
 **Telegram bot** (optional but recommended) — create one via [@BotFather](https://t.me/botfather) to chat with your agent.
 
