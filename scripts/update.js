@@ -10,14 +10,16 @@
 //   node scripts/update.js --help   — show this help
 //
 // What is SAFE to update (overwritten from upstream):
-//   lib/*.js, agent.js, soul.md, config/reflect.md, skills/, scripts/, package.json
+//   lib/*.js, agent.js, soul.md, walkthrough.md, ARCHITECTURE.md, CONTRIBUTING.md,
+//   SECURITY.md, config/reflect.md, config/heartbeat.md, config/agent.json,
+//   skills/, scripts/, docs/, package.json
 //
 // What is YOURS (never touched):
 //   data/          — positions, trade history, memories, profile, queue
 //   .env           — secrets and API keys
 //   soul.local.md  — your agent personality (overrides soul.md)
 //   config/agent.local.json — your config overrides (overrides agent.json)
-//   config/agent.json — only touched if you haven't modified it locally
+//   config/agent.json — always overwritten; put your tweaks in agent.local.json
 //
 // The recommended workflow:
 //   1. Put your config tweaks in config/agent.local.json (not agent.json)
@@ -43,10 +45,15 @@ const SAFE_PATTERNS = [
   'agent.js',
   'soul.md',
   'README.md',
+  'walkthrough.md',
+  'ARCHITECTURE.md',
+  'CONTRIBUTING.md',
+  'SECURITY.md',
   'lib/',
   'skills/',
   'scripts/',
   'config/reflect.md',
+  'config/heartbeat.md',
   'config/agent.json',
   'config/presets/',
   'docs/',
