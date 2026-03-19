@@ -2,7 +2,7 @@
 
 # pisky-agent
 
-**A fully autonomous Solana trading agent. Real wallet. Real trades. Real consequences.**
+**An open-source autonomous trading agent for Solana. Scans, buys, monitors, reflects, and earns — on its own. Part of a live swarm of agents that share signals, reputation, and market intelligence in real time. Extend it with custom tools, teach it new skills, or build on top of it.**
 
 [![Node.js](https://img.shields.io/badge/node-%3E%3D18-brightgreen)](https://nodejs.org)
 [![Version](https://img.shields.io/badge/version-0.2.0-blue)](https://github.com/PiskyCAE/pisky-agent/releases)
@@ -16,13 +16,12 @@
 
 ## What it does
 
-- **Trades autonomously** — scans for dip-reversal opportunities every 5 minutes and buys the best candidate. Fully deterministic — no LLM required for trading.
-- **Monitors positions** — checks stops every 10s, auto-exits on stop-loss / take-profit / trailing-stop / max-hold.
-- **Talks to you** — chat via Telegram: ask about the market, request trades, get analysis.
-- **Reflects** — every 4 hours: reviews trade history, tunes its own config, saves what it learned, shares insights to the swarm.
-- **Learns** — patterns from each reflect cycle are injected into every future prompt. The agent builds cumulative self-knowledge across sessions.
-- **Earns PISKY** — 25% of each winning trade auto-buys PISKY to fund its own API calls.
-- **Swarm intelligence** — reads peer buy/sell signals, checks shared blacklists, participates in coordinated exits, builds reputation from signal accuracy.
+- **Scans and trades** — dip-reversal scoring runs every 5 minutes, buys the best candidate, monitors stops every 10s. No LLM in the hot path — deterministic and fast.
+- **Self-tunes** — every 4 hours it reviews its own trade history, adjusts config within safe bounds, stores lessons, and shares insights to the swarm.
+- **Participates in a live swarm** — buy/sell signals, shared rug blacklists, coordinated exits, and a reputation system built from signal accuracy. Every agent gets smarter as the swarm grows.
+- **Talks to you** — full Telegram interface: ask questions, request trades, check positions, trigger scans. Or skip Telegram and use the CLI.
+- **Funds itself** — 25% of each winning trade auto-buys PISKY to pay for its own API calls. A profitable agent is a self-sustaining one.
+- **Extensible** — add tools, write skills, or drop in custom scripts. The agent can write and run its own code via the `builder` skill. Fork it, extend it, build something different on top of it.
 
 ---
 
