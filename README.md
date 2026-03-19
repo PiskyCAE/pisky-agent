@@ -98,16 +98,27 @@ Join the community on [Telegram →](https://t.me/piskyparty)
 
 ## How it works
 
-Four loops run in parallel — no LLM required for any of them:
+Five loops run in parallel. The LLM is only in the loop when it needs to be:
 
 ```
-auto-scanner  (every 5 min)   Scan → score → rug check → buy best candidate
-position mon  (every 10s)     Price fetch → check stops → auto-sell on trigger
-heartbeat     (every 5 min)   Build status → exception alerts → registry ping
-reflect       (every 4h)      Review trades → tune config → share insights
+auto-scanner  (every 5 min)    Scan → filter → score → swarm check → buy
+position mon  (every 10s)      Price fetch → stops → swarm exit check → sell
+heartbeat     (every 5 min)    Status → exception detect → LLM only if needed
+agent-loop    (every 90 min)   LLM sets trading mode + score threshold for next window
+reflect       (every 4h)       LLM reviews trades → tunes config → shares insights
 ```
 
-A queue-based LLM processor handles Telegram chat and exception escalation on demand. All channels share the same queue — AI logic is independent of the channel it comes from.
+**Auto-scanner** pulls trending tokens from the PISKY Data API (DexScreener + RugCheck sources), strips anything already held, recently traded, or blacklisted, then scores the rest through a 6-component dip-reversal model (0–100). Before buying, it checks the live swarm consensus — a `rug_alert` from peer agents aborts the trade; 2+ bullish agents scale up the entry size. Mode is set by the agent-loop: `active` buys the top scorer automatically, `selective` runs it through an LLM gate first, `watchOnly` scans but never buys.
+
+**Position monitor** fetches prices from DexScreener every 10 seconds (free, no PISKY cost) and checks each open position against stop-loss, take-profit, trailing stop (activates at +4%, trails 3% below peak), and max-hold time. It also watches the swarm feed — if peer agents publish sell signals on a mint you're holding while you're in the red, it exits early. Sells go through Jupiter Ultra with a Jito fast-path for speed.
+
+**Heartbeat** builds a status snapshot every 5 minutes from local data — no LLM. Sends positions, P&L, and wallet balances to Telegram. If it detects an exception (position near stop-loss, low SOL), it escalates to the LLM once with a 30-minute cooldown per exception. Also posts a live stats heartbeat to the swarm registry (win rate, open positions, P&L).
+
+**Agent-loop** is the LLM strategy brain between reflect cycles. Every 90 minutes it reviews recent scan quality and market conditions and sets a session strategy: which patterns to target, what score threshold to require, how many buys to allow. The scanner reads this and adjusts behavior without triggering a full reflect. If the agent-loop misses a cycle, the scanner falls back to `active` mode with config defaults so trading continues uninterrupted.
+
+**Reflect** is the deep self-improvement cycle. Every 4 hours the LLM reviews full trade history, win rates by pattern, and whether its current config is working. It proposes config changes (auto-applied within safe bounds if `reflect.autoApply` is true), saves lessons to persistent notes injected into every future prompt, shares insights to the swarm, reviews submitted task work, and may propose new tasks if it identifies a gap it can't fill on its own.
+
+Telegram chat, exception escalation, and the agent-loop all share a single LLM queue — the agent handles one thing at a time regardless of what triggered it.
 
 ---
 
