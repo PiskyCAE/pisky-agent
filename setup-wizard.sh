@@ -79,9 +79,8 @@ step_header() {
 
 # ── Banner ────────────────────────────────────────────────────────────────────
 
-clear
 echo ""
-echo ""
+echo -e "  ${DIM}─────────────────────────────────────────────────${NC}"
 echo -e "  ${BRIGHT_GREEN}██████╗ ██╗███████╗██╗  ██╗██╗   ██╗${NC}"
 echo -e "  ${BRIGHT_GREEN}██╔══██╗██║██╔════╝██║ ██╔╝╚██╗ ██╔╝${NC}"
 echo -e "  ${BRIGHT_GREEN}██████╔╝██║███████╗█████╔╝  ╚████╔╝ ${NC}"
@@ -94,7 +93,15 @@ echo -e "  ${DIM}─────────────────────
 echo ""
 
 if [ -n "$ADDRESS_ARG" ]; then
-  echo -e "  ${DIM}new wallet${NC}  ${GREEN}${ADDRESS_ARG}${NC}"
+  echo -e "  ${YELLOW}▸  new wallet address (save this!)${NC}"
+  echo -e "  ${BRIGHT_GREEN}${ADDRESS_ARG}${NC}"
+  echo ""
+fi
+
+# Warn if stdin is not a terminal (non-interactive — all prompts will use defaults)
+if [ ! -t 0 ]; then
+  echo -e "  ${YELLOW}⚠  Non-interactive mode detected — using defaults for all prompts.${NC}"
+  echo -e "  ${DIM}  Re-run: node agent.js setup   to change settings.${NC}"
   echo ""
 fi
 
@@ -305,14 +312,23 @@ echo -e "  ${DIM}─────────────────────
 echo ""
 
 if [ -n "$ADDRESS_ARG" ]; then
-  echo -e "  ${DIM}wallet${NC}    ${GREEN}${ADDRESS_ARG}${NC}"
-  echo -e "  ${DIM}fund${NC}      ${BOLD}0.1 SOL minimum${NC}  ${DIM}+${NC}  ${BOLD}50,000 PISKY${NC}  ${DIM}for API calls${NC}"
+  echo -e "  ${YELLOW}┌─  FUND YOUR AGENT WALLET  ─────────────────────────────────┐${NC}"
+  echo -e "  ${YELLOW}│${NC}  ${BRIGHT_GREEN}${ADDRESS_ARG}${NC}"
+  echo -e "  ${YELLOW}│${NC}"
+  echo -e "  ${YELLOW}│${NC}  Send at least ${BOLD}0.05 SOL${NC} to this address before starting"
+  echo -e "  ${YELLOW}│${NC}  (covers transaction fees + a few initial trades)"
+  echo -e "  ${YELLOW}└────────────────────────────────────────────────────────────┘${NC}"
+  echo ""
+  echo -e "  ${DIM}⚠  Back up your private key:${NC}  grep AGENT_KEYPAIR .env"
   echo ""
 fi
 
-echo -e "  ${DIM}personality${NC}   cp soul.md soul.local.md"
-echo -e "  ${DIM}config${NC}        edit config/agent.local.json"
+echo -e "  ${DIM}next steps${NC}"
+echo -e "  ${CYAN}  1.${NC} Fund the wallet above with SOL"
+echo -e "  ${CYAN}  2.${NC} ${BRIGHT_GREEN}node agent.js start${NC}  — launch the agent"
+echo -e "  ${CYAN}  3.${NC} ${BRIGHT_GREEN}node agent.js setup${NC}  — change any settings later"
 echo ""
-echo -e "  ${CYAN}▸  start     ${NC}${BRIGHT_GREEN}node agent.js start${NC}"
-echo -e "  ${CYAN}▸  service   ${NC}${BRIGHT_GREEN}systemctl --user enable --now pisky-agent${NC}"
+echo -e "  ${DIM}optional${NC}"
+echo -e "  ${DIM}  personality${NC}   cp soul.md soul.local.md"
+echo -e "  ${DIM}  as service${NC}    systemctl --user enable --now pisky-agent"
 echo ""
