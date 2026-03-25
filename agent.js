@@ -131,18 +131,7 @@ async function cmdInit() {
   fs.writeFileSync(envPath, minimalEnv);
 
   // Run setup wizard (overwrites .env with full config)
-  const wizardPath = path.join(__dirname, 'setup-wizard.sh');
-  if (fs.existsSync(wizardPath)) {
-    const { spawnSync } = require('child_process');
-    const r = spawnSync('bash', [wizardPath, '--keypair', privB58, '--address', address], { stdio: 'inherit' });
-    if (r.error || r.status !== 0) {
-      console.error('\nSetup wizard did not complete cleanly.');
-      console.error('Your wallet keypair has been saved to .env — do not delete it.');
-      console.error(`Wallet address: ${address}`);
-      console.error('\nRe-run "node agent.js setup" to finish configuration.\n');
-      // Don't exit — continue to register and write identity so the wallet is usable
-    }
-  }
+  runWizard(privB58, address);
 
   // Save identity
   const identityFile = path.join(__dirname, 'data/agent-identity.json');
@@ -242,13 +231,53 @@ async function cmdInit() {
   console.log('\nFund with at least 0.05 SOL, then run:   node agent.js start\n');
 }
 
+// ── Setup wizard launcher (cross-platform) ────────────────────────────────────
+
+function runWizard(keypair, address) {
+  const { spawnSync } = require('child_process');
+  const jsWizard = path.join(__dirname, 'setup-wizard.js');
+  const shWizard = path.join(__dirname, 'setup-wizard.sh');
+
+  // Prefer Node.js wizard (works on Windows/macOS/Linux)
+  if (fs.existsSync(jsWizard)) {
+    const args = [jsWizard];
+    if (keypair) args.push('--keypair', keypair);
+    if (address) args.push('--address', address);
+    const r = spawnSync(process.execPath, args, { stdio: 'inherit' });
+    if (r.error || r.status !== 0) {
+      console.error('\nSetup wizard did not complete cleanly.');
+      if (keypair) {
+        console.error('Your wallet keypair has been saved to .env — do not delete it.');
+        console.error(`Wallet address: ${address}`);
+      }
+      console.error('\nRe-run "node agent.js setup" to finish configuration.\n');
+    }
+    return;
+  }
+
+  // Fallback: bash wizard (Linux/macOS only)
+  if (process.platform !== 'win32' && fs.existsSync(shWizard)) {
+    const args = [shWizard];
+    if (keypair) args.push('--keypair', keypair, '--address', address);
+    const r = spawnSync('bash', args, { stdio: 'inherit' });
+    if (r.error || r.status !== 0) {
+      console.error('\nSetup wizard did not complete cleanly.');
+      if (keypair) {
+        console.error('Your wallet keypair has been saved to .env — do not delete it.');
+        console.error(`Wallet address: ${address}`);
+      }
+      console.error('\nRe-run "node agent.js setup" to finish configuration.\n');
+    }
+    return;
+  }
+
+  console.error('\nNo setup wizard found. Edit .env manually to add your API keys.\n');
+}
+
 // ── CLI: setup — re-run wizard ────────────────────────────────────────────────
 
 async function cmdSetup() {
-  const wizardPath = path.join(__dirname, 'setup-wizard.sh');
-  if (!fs.existsSync(wizardPath)) { console.error('setup-wizard.sh not found'); process.exit(1); }
-  const { spawnSync } = require('child_process');
-  spawnSync('bash', [wizardPath], { stdio: 'inherit' });
+  runWizard(null, null);
 }
 
 // ── CLI: wallet ───────────────────────────────────────────────────────────────
