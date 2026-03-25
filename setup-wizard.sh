@@ -252,8 +252,19 @@ read -rp "  API base URL (Enter to keep): " API_BASE
 API_BASE="${API_BASE:-${EXISTING_BASE:-https://api.pisky.xyz}}"
 
 EXISTING_IK=$(_env_get "PISKY_INTERNAL_KEY")
-read -rp "  Internal key for self-hosted bypass (Enter to skip): " PISKY_INTERNAL_KEY
-PISKY_INTERNAL_KEY="${PISKY_INTERNAL_KEY:-$EXISTING_IK}"
+read -rp "  Internal key for self-hosted bypass (Enter to skip): " _IK_INPUT
+if [[ -n "$_IK_INPUT" ]]; then
+  if [[ "$_IK_INPUT" == pnk_* ]] || [[ "$_IK_INPUT" == MCow* ]]; then
+    echo -e "  ${RED}✗  That looks like a node keypair (pnk_/MCow…), not an internal key.${NC}"
+    echo -e "  ${DIM}  Find your key: pisky-data-api/.env → PISKY_DATA_API_INTERNAL_KEY${NC}"
+    echo -e "  ${DIM}  Keeping previous value.${NC}"
+    PISKY_INTERNAL_KEY="$EXISTING_IK"
+  else
+    PISKY_INTERNAL_KEY="$_IK_INPUT"
+  fi
+else
+  PISKY_INTERNAL_KEY="$EXISTING_IK"
+fi
 echo -e "  ${GREEN}✓  API: ${BRIGHT_GREEN}${API_BASE}${NC}"
 
 # ── Write .env ────────────────────────────────────────────────────────────────

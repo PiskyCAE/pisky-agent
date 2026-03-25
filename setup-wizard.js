@@ -22,6 +22,7 @@ const hasColour = process.stdout.isTTY && process.platform !== 'win32'
 const G  = s => hasColour ? `\x1b[0;32m${s}\x1b[0m`  : s;  // green
 const BG = s => hasColour ? `\x1b[1;32m${s}\x1b[0m`  : s;  // bright green
 const Y  = s => hasColour ? `\x1b[1;33m${s}\x1b[0m`  : s;  // yellow
+const R  = s => hasColour ? `\x1b[0;31m${s}\x1b[0m`  : s;  // red
 const C  = s => hasColour ? `\x1b[0;36m${s}\x1b[0m`  : s;  // cyan
 const D  = s => hasColour ? `\x1b[2m${s}\x1b[0m`     : s;  // dim
 const B  = s => hasColour ? `\x1b[1m${s}\x1b[0m`     : s;  // bold
@@ -251,8 +252,20 @@ async function main() {
   const apiBase = apiAns.trim() || existingBase;
 
   const existingIk = envGet('PISKY_INTERNAL_KEY');
-  const ikAns = await ask(rl, '  Internal key for self-hosted bypass (Enter to skip): ');
-  const piskyInternalKey = ikAns.trim() || existingIk;
+  let piskyInternalKey = existingIk;
+  {
+    const ikAns = await ask(rl, '  Internal key for self-hosted bypass (Enter to skip): ');
+    const ikTrimmed = ikAns.trim();
+    if (ikTrimmed) {
+      if (ikTrimmed.startsWith('pnk_') || ikTrimmed.startsWith('MCow')) {
+        console.log(`  ${R('✗  That looks like a node keypair (pnk_/MCow…), not an internal key.')}`);
+        console.log(`  ${D('  Find your key: pisky-data-api/.env → PISKY_DATA_API_INTERNAL_KEY')}`);
+        console.log(`  ${D('  Keeping previous value.')}`);
+      } else {
+        piskyInternalKey = ikTrimmed;
+      }
+    }
+  }
   console.log(`  ${G('✓  API:')} ${BG(apiBase)}`);
 
   rl.close();
