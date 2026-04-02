@@ -72,7 +72,7 @@ for (let i = 2; i < process.argv.length; i++) {
 
 async function main() {
   console.log('');
-  console.log(`  ${D('─'.repeat(49))}`);
+  console.log(`  ${D('·'.repeat(49))}`);
   console.log(`  ${BG('██████╗ ██╗███████╗██╗  ██╗██╗   ██╗')}`);
   console.log(`  ${BG('██╔══██╗██║██╔════╝██║ ██╔╝╚██╗ ██╔╝')}`);
   console.log(`  ${BG('██████╔╝██║███████╗█████╔╝  ╚████╔╝ ')}`);
@@ -80,8 +80,8 @@ async function main() {
   console.log(`  ${BG('██║     ██║███████║██║  ██╗   ██║    ')}`);
   console.log(`  ${BG('╚═╝     ╚═╝╚══════╝╚═╝  ╚═╝   ╚═╝   ')}`);
   console.log('');
-  console.log(`  ${D('autonomous solana trading agent  ·  agent setup')}`);
-  console.log(`  ${D('─'.repeat(49))}`);
+  console.log(`  ${D('autonomous solana trading agent')}  ${G('·')}  ${D('setup wizard')}`);
+  console.log(`  ${D('·'.repeat(49))}`);
   console.log('');
 
   if (addressArg) {
